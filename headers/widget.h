@@ -5,7 +5,7 @@
 #include <QMessageBox>
 #include <QApplication>
 #include <QStyle>
-#include "RestfulServer.h"
+#include "headers/RestfulServer.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Widget; }
@@ -19,7 +19,8 @@ public:
     Widget(QWidget *parent = nullptr);
     void refreshServerStatus();
     ~Widget();
-
+public slots:
+    void refreshTableData();
 private slots:
     void on_turnServerButton_clicked();
 

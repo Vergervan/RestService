@@ -6,8 +6,8 @@
 #include <QString>
 #include <QMap>
 #include <sstream>
-#include "httprequest.h"
-#include "httpresponse.h"
+#include "headers/httprequest.h"
+#include "headers/httpresponse.h"
 
 class MessageHandler : public QObject
 {
@@ -19,6 +19,7 @@ public:
     int addNewValueInTable(QString value);
     void writeInJournal(HttpRequest::RequestType, int);
     QString getTableBody();
+    inline QMap<int, QString> getTable() { return table; }
 private:
     QMap<int, QString> table;
     QStringList journal;

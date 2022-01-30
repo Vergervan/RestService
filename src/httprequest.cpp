@@ -1,4 +1,4 @@
-#include "httprequest.h"
+#include "headers/httprequest.h"
 
 //Parsing a body in the constructor
 HttpRequest::HttpRequest(QString body)

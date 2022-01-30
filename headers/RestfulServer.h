@@ -6,8 +6,8 @@
 #include <QDataStream>
 #include <QDebug>
 #include <QThread>
-#include "messagehandler.h"
-#include "messagereader.h"
+#include "headers/messagehandler.h"
+#include "headers/messagereader.h"
 
 class RestfulServer : public QTcpServer{
 
@@ -16,6 +16,7 @@ public:
     {
         handler = new MessageHandler;
     }
+    inline QMap<int, QString> getTable() { return handler->getTable(); }
     ~RestfulServer();
 protected:
     void incomingConnection(qintptr socket) override;

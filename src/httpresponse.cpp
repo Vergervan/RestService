@@ -1,4 +1,4 @@
-#include "httpresponse.h"
+#include "headers/httpresponse.h"
 
 void HttpResponse::sendResponse(const QTcpSocket* client, ResponseCode code, MessageType type, QString responseMessage)
 {

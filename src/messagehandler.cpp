@@ -1,4 +1,4 @@
-#include "messagehandler.h"
+#include "headers/messagehandler.h"
 
 void MessageHandler::process(QTcpSocket* client, const QString message)
 {
@@ -69,7 +69,6 @@ void MessageHandler::writeInJournal(HttpRequest::RequestType type, int id)
             break;
     }
 }
-
 //Making a table HTML code
 QString MessageHandler::getTableBody()
 {

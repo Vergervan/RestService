@@ -5,7 +5,7 @@
 #include <QTcpSocket>
 #include <QByteArray>
 #include <QDebug>
-#include "messagehandler.h"
+#include "headers/messagehandler.h"
 
 class MessageReader : public QObject
 {

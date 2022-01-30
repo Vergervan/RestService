@@ -11,21 +11,21 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    RestfulServer.cpp \
-    httprequest.cpp \
-    httpresponse.cpp \
     main.cpp \
-    messagehandler.cpp \
-    messagereader.cpp \
-    widget.cpp
+    src/RestfulServer.cpp \
+    src/httprequest.cpp \
+    src/httpresponse.cpp \
+    src/messagehandler.cpp \
+    src/messagereader.cpp \
+    src/widget.cpp \
 
 HEADERS += \
-    RestfulServer.h \
-    httprequest.h \
-    httpresponse.h \
-    messagehandler.h \
-    messagereader.h \
-    widget.h
+    headers/RestfulServer.h \
+    headers/httprequest.h \
+    headers/httpresponse.h \
+    headers/messagehandler.h \
+    headers/messagereader.h \
+    headers/widget.h \
 
 FORMS += \
     widget.ui

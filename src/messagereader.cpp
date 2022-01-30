@@ -1,4 +1,4 @@
-#include "messagereader.h"
+#include "headers/messagereader.h"
 
 MessageReader::MessageReader(QTcpSocket* client, MessageHandler* handler)
 {
