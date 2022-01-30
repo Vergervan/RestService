@@ -74,7 +74,7 @@ void MessageHandler::writeInJournal(HttpRequest::RequestType type, int id)
 QString MessageHandler::getTableBody()
 {
     std::stringstream ss;
-    ss << "<html><body><table><tr><th>ID</th><th>Value</th></tr>";
+    ss << "<html><body><table border=\"1\" style=\"border-collapse: collapse; border: 1px solid black;\"><tr><th>ID</th><th>Value</th></tr>";
     for(auto it = table.begin(); it != table.end(); it++)
     {
         ss << QString("<tr><td>%1</td><td>%2</td></tr>").arg(QString::number(it.key()), it.value()).toStdString();
