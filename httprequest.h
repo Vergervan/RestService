@@ -27,10 +27,10 @@ public:
     QString getBody();
 private:
     bool _error = false;
-    QString body;
+    QString body; //Body of the request
     std::map<QString, QString> routeValues;
-    RequestType _type;
-    QStringList reqLines;
+    RequestType _type; //Type of the request
+    QStringList reqLines; //Every line of the request
 };
 
 #endif // HTTPREQUEST_H

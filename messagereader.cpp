@@ -12,6 +12,7 @@ MessageReader::~MessageReader()
     qDebug("Reader removed");
 }
 
+//Reading data from socket
 void MessageReader::read()
 {
     qDebug("Start read");

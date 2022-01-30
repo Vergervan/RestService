@@ -2,6 +2,9 @@
 #define WIDGET_H
 
 #include <QWidget>
+#include <QMessageBox>
+#include <QApplication>
+#include <QStyle>
 #include "RestfulServer.h"
 
 QT_BEGIN_NAMESPACE
@@ -14,6 +17,7 @@ class Widget : public QWidget
 
 public:
     Widget(QWidget *parent = nullptr);
+    void refreshServerStatus();
     ~Widget();
 
 private slots:
@@ -21,6 +25,7 @@ private slots:
 
 private:
     RestfulServer* server;
+    bool isWorking = false;
     Ui::Widget *ui;
 };
 #endif // WIDGET_H

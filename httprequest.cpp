@@ -1,11 +1,11 @@
 #include "httprequest.h"
 
+//Parsing a body in the constructor
 HttpRequest::HttpRequest(QString body)
 {
     this->body = body;
     body = body.remove('\r');
     reqLines = body.split('\n');
-    qDebug() << reqLines[reqLines.length()-1];
     QRegularExpressionMatch match;
     int offset = 0;
     bool hasMatch = false;
@@ -32,13 +32,13 @@ bool HttpRequest::hasRoute(QString routeName)
     int offset = matchRoute + routeName.length() + 1;
     int start = offset;
     int valLen = 0;
-    while(!(body[offset] == ' '))
+    while(!(body[offset] == ' ')) //Calculating a string length of the value
     {
         valLen++;
         offset++;
     }
-    QString routeValue = body.mid(start, valLen);
-    routeValues.insert( { routeName, routeValue });
+    QString routeValue = body.mid(start, valLen); //Substring a body to get value
+    routeValues.insert( { routeName, routeValue }); //Adding route and it's value to map
     return true;
 }
 

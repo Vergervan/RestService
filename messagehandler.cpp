@@ -2,7 +2,7 @@
 
 void MessageHandler::process(QTcpSocket* client, const QString message)
 {
-    HttpRequest request(message);
+    HttpRequest request(message); //Parsing a message into the HttpRequest
 
     if(request.hasRoute("api"))
     {
@@ -10,11 +10,11 @@ void MessageHandler::process(QTcpSocket* client, const QString message)
     }
     else if(request.hasRoute("test"))
     {
-        HttpResponse::sendResponse(client, HttpResponse::Ok, HttpResponse::Html, getTableBody());
+        HttpResponse::sendResponse(client, HttpResponse::Ok, HttpResponse::Html, getTableBody()); //Send a table to the browser
     }
     else
     {
-        HttpResponse::sendResponse(client, HttpResponse::BadRequest);
+        HttpResponse::sendResponse(client, HttpResponse::BadRequest); //Bad request 'cause cannot find a route
     }
 }
 
@@ -22,35 +22,33 @@ void MessageHandler::processApi(QTcpSocket* client, HttpRequest& request)
 {
     QString routeValue = request.getRouteValue("api");
     HttpRequest::RequestType type = request.getRequestType();
-    if(type == HttpRequest::Post)
+    if(type == HttpRequest::Post) //A condition for the POST request
     {
         int id = addNewValueInTable(request.getBody());
         writeInJournal(type, id);
         return HttpResponse::sendResponse(client, HttpResponse::Ok, HttpResponse::Json, QString::number(id));
     }
     bool ok = false;
-    int intRouteValue = routeValue.toInt(&ok);
+    int intRouteValue = routeValue.toInt(&ok); //Converting a value from the request to Integer
     if(!ok || !table.contains(intRouteValue))
     {
         return HttpResponse::sendResponse(client, HttpResponse::BadRequest);
     }
     writeInJournal(type, intRouteValue);
-    qDebug() << "Processing a request";
     switch(type)
     {
         case HttpRequest::Get:
-            return HttpResponse::sendResponse(client, HttpResponse::Ok, HttpResponse::Json, table[intRouteValue]);
+            return HttpResponse::sendResponse(client, HttpResponse::Ok, HttpResponse::Json, table[intRouteValue]); //Sending a value of some ID from the table
             break;
         case HttpRequest::Put:
-            table[intRouteValue] = request.getBody();
+            table[intRouteValue] = request.getBody(); //Setting a value from the request to ID
             return HttpResponse::sendResponse(client, HttpResponse::Ok);
             break;
         case HttpRequest::Delete:
-            table.remove(intRouteValue);
+            table.remove(intRouteValue); //Remove an ID from the table
             return HttpResponse::sendResponse(client, HttpResponse::Ok);
             break;
     }
-    qDebug() << "Stop processing";
 }
 
 void MessageHandler::writeInJournal(HttpRequest::RequestType type, int id)
@@ -59,19 +57,20 @@ void MessageHandler::writeInJournal(HttpRequest::RequestType type, int id)
     switch (type)
     {
         case HttpRequest::Post:
-            journal.emplace_back(pattern + "added");
+            journal.push_back(pattern + "added");
             break;
         case HttpRequest::Put:
-            journal.emplace_back(pattern + "changed");
+            journal.push_back(pattern + "changed");
             break;
         case HttpRequest::Delete:
-            journal.emplace_back(pattern + "deleted");
+            journal.push_back(pattern + "deleted");
             break;
         default:
             break;
     }
 }
 
+//Making a table HTML code
 QString MessageHandler::getTableBody()
 {
     std::stringstream ss;

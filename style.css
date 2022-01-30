@@ -1,0 +1,7 @@
+QLabel[state = "on"]{
+    color: #42ec2f
+}
+
+QLabel[state = "off"]{
+    color: #ec2f2f
+}
