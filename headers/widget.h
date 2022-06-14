@@ -5,7 +5,8 @@
 #include <QMessageBox>
 #include <QApplication>
 #include <QStyle>
-#include "headers/RestfulServer.h"
+#include <QtSql>
+#include "headers/restfulserver.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Widget; }
@@ -26,6 +27,7 @@ private slots:
 
 private:
     RestfulServer* server;
+    QSqlDatabase db;
     bool isWorking = false;
     Ui::Widget *ui;
 };

@@ -10,14 +10,9 @@
 class HttpRequest
 {
 private:
-    const std::vector<QRegularExpression> requests { QRegularExpression("GET*"),
-                                                     QRegularExpression("POST*"),
-                                                     QRegularExpression("PUT*"),
-                                                     QRegularExpression("DELETE*") };
+    const std::vector<QString> requests { "GET", "POST", "PUT", "DELETE" };
 public:
-    enum RequestType{
-        Get, Post, Put, Delete
-    };
+    enum RequestType { Get, Post, Put, Delete };
 
     HttpRequest(QString);
     inline RequestType getRequestType() { return _type; }

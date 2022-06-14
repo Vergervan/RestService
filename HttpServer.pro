@@ -1,6 +1,7 @@
 QT       += \
         core gui \
-        network
+        network \
+        sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -12,7 +13,7 @@ CONFIG += c++11
 
 SOURCES += \
     main.cpp \
-    src/RestfulServer.cpp \
+    src/restfulserver.cpp \
     src/httprequest.cpp \
     src/httpresponse.cpp \
     src/messagehandler.cpp \
@@ -20,7 +21,7 @@ SOURCES += \
     src/widget.cpp \
 
 HEADERS += \
-    headers/RestfulServer.h \
+    headers/restfulserver.h \
     headers/httprequest.h \
     headers/httpresponse.h \
     headers/messagehandler.h \

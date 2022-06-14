@@ -20,17 +20,25 @@ void MessageHandler::process(QTcpSocket* client, const QString message)
 
 void MessageHandler::processApi(QTcpSocket* client, HttpRequest& request)
 {
+    QSqlQuery query(db);
+
     QString routeValue = request.getRouteValue("api");
     HttpRequest::RequestType type = request.getRequestType();
     if(type == HttpRequest::Post) //A condition for the POST request
     {
         int id = addNewValueInTable(request.getBody());
+        if(id == -1)
+        {
+            return HttpResponse::sendResponse(client, HttpResponse::BadRequest);
+        }
         writeInJournal(type, id);
         return HttpResponse::sendResponse(client, HttpResponse::Ok, HttpResponse::Json, QString::number(id));
     }
     bool ok = false;
     int intRouteValue = routeValue.toInt(&ok); //Converting a value from the request to Integer
-    if(!ok || !table.contains(intRouteValue))
+    query.prepare("SELECT value FROM data_values WHERE id = ?");
+    query.addBindValue(intRouteValue);
+    if(!ok || !query.exec() || !query.first())
     {
         return HttpResponse::sendResponse(client, HttpResponse::BadRequest);
     }
@@ -38,16 +46,20 @@ void MessageHandler::processApi(QTcpSocket* client, HttpRequest& request)
     switch(type)
     {
         case HttpRequest::Get:
-            return HttpResponse::sendResponse(client, HttpResponse::Ok, HttpResponse::Json, table[intRouteValue]); //Sending a value of some ID from the table
-            break;
+            return HttpResponse::sendResponse(client, HttpResponse::Ok, HttpResponse::Json, query.value(0).toString()); //Sending a value of some ID from the table
+
         case HttpRequest::Put:
-            table[intRouteValue] = request.getBody(); //Setting a value from the request to ID
-            return HttpResponse::sendResponse(client, HttpResponse::Ok);
-            break;
+            query.prepare("UPDATE data_values SET value = ? WHERE id = ?");
+            query.addBindValue(request.getBody());
+            query.addBindValue(intRouteValue);
+            if(query.exec())
+                return HttpResponse::sendResponse(client, HttpResponse::Ok);
+
         case HttpRequest::Delete:
-            table.remove(intRouteValue); //Remove an ID from the table
-            return HttpResponse::sendResponse(client, HttpResponse::Ok);
-            break;
+            query.prepare("DELETE FROM data_values WHERE id = ?"); //Remove an ID from the table
+            query.addBindValue(intRouteValue);
+            if(query.exec())
+                return HttpResponse::sendResponse(client, HttpResponse::Ok);
     }
 }
 
@@ -57,31 +69,39 @@ void MessageHandler::writeInJournal(HttpRequest::RequestType type, int id)
     switch (type)
     {
         case HttpRequest::Post:
-            journal.push_back(pattern + "added");
+            pattern.append("added");
             break;
         case HttpRequest::Put:
-            journal.push_back(pattern + "changed");
+            pattern.append("changed");
             break;
         case HttpRequest::Delete:
-            journal.push_back(pattern + "deleted");
+            pattern.append("deleted");
             break;
-        default:
-            break;
+    }
+    if(type != HttpRequest::Get)
+    {
+        QSqlQuery query(db);
+        query.prepare("INSERT INTO operations(operationText) VALUES (?)");
+        query.addBindValue(pattern);
+        query.exec();
     }
 }
 //Making a table HTML code
 QString MessageHandler::getTableBody()
 {
+    QSqlQuery query(db);
+    query.exec("SELECT * FROM data_values");
     std::stringstream ss;
     ss << "<html><body><table border=\"1\" style=\"border-collapse: collapse; border: 1px solid black;\"><tr><th>ID</th><th>Value</th></tr>";
-    for(auto it = table.begin(); it != table.end(); it++)
+    while(query.next())
     {
-        ss << QString("<tr><td>%1</td><td>%2</td></tr>").arg(QString::number(it.key()), it.value()).toStdString();
+        ss << QString("<tr><td>%1</td><td>%2</td></tr>").arg(query.value(0).toString(), query.value(1).toString()).toStdString();
     }
-    ss << "</table><br>";
-    foreach (auto record, journal)
+    ss << "</table><br>Operations journal:<br>";
+    query.exec("SELECT time, operationText FROM operations");
+    while(query.next())
     {
-        ss << record.toStdString() << "<br>";
+        ss << query.value(0).toString().toStdString() << " - " << query.value(1).toString().toStdString() << "<br>";
     }
     ss << "</body></html>";
     return QString(ss.str().c_str());
@@ -89,11 +109,12 @@ QString MessageHandler::getTableBody()
 
 int MessageHandler::addNewValueInTable(QString value)
 {
-    int pos = 0;
-    while(table.contains(pos))
-    {
-        ++pos;
+    QSqlQuery query(this->db);
+    query.prepare("INSERT INTO data_values VALUES (null, ?)");
+    query.addBindValue(value);
+    if(!query.exec()){
+        query.lastError().databaseText();
+        return -1;
     }
-    table.insert(pos, value);
-    return pos;
+    return query.lastInsertId().toInt();
 }

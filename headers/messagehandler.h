@@ -4,8 +4,9 @@
 #include <QTcpSocket>
 #include <QObject>
 #include <QString>
-#include <QMap>
 #include <sstream>
+#include <QDebug>
+#include <QtSql>
 #include "headers/httprequest.h"
 #include "headers/httpresponse.h"
 
@@ -19,10 +20,9 @@ public:
     int addNewValueInTable(QString value);
     void writeInJournal(HttpRequest::RequestType, int);
     QString getTableBody();
-    inline QMap<int, QString> getTable() { return table; }
+    inline void setDatabase(QSqlDatabase db) { this->db = db; }
 private:
-    QMap<int, QString> table;
-    QStringList journal;
+    QSqlDatabase db;
 };
 
 #endif // MESSAGEHANDLER_H

@@ -1,4 +1,4 @@
-#include "headers/RestfulServer.h"
+#include "headers/restfulserver.h"
 #include "headers/widget.h"
 
 RestfulServer::~RestfulServer()

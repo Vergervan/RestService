@@ -6,13 +6,11 @@ HttpRequest::HttpRequest(QString body)
     this->body = body;
     body = body.remove('\r');
     reqLines = body.split('\n');
-    QRegularExpressionMatch match;
-    int offset = 0;
+    unsigned short int offset = 0;
     bool hasMatch = false;
     foreach (const auto &pattern, requests)
     {
-        match = pattern.match(body);
-        if(match.hasMatch()){
+        if(body.indexOf(pattern) != -1){
             hasMatch = true;
             break;
         }
