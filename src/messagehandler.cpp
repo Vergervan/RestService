@@ -47,19 +47,22 @@ void MessageHandler::processApi(QTcpSocket* client, HttpRequest& request)
     {
         case HttpRequest::Get:
             return HttpResponse::sendResponse(client, HttpResponse::Ok, HttpResponse::Json, query.value(0).toString()); //Sending a value of some ID from the table
-
+        Q_FALLTHROUGH();
         case HttpRequest::Put:
             query.prepare("UPDATE data_values SET value = ? WHERE id = ?");
             query.addBindValue(request.getBody());
             query.addBindValue(intRouteValue);
             if(query.exec())
                 return HttpResponse::sendResponse(client, HttpResponse::Ok);
-
+        Q_FALLTHROUGH();
         case HttpRequest::Delete:
             query.prepare("DELETE FROM data_values WHERE id = ?"); //Remove an ID from the table
             query.addBindValue(intRouteValue);
             if(query.exec())
                 return HttpResponse::sendResponse(client, HttpResponse::Ok);
+        Q_FALLTHROUGH();
+        default:
+            break;
     }
 }
 
@@ -76,6 +79,8 @@ void MessageHandler::writeInJournal(HttpRequest::RequestType type, int id)
             break;
         case HttpRequest::Delete:
             pattern.append("deleted");
+            break;
+        default:
             break;
     }
     if(type != HttpRequest::Get)

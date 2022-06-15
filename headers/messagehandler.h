@@ -7,6 +7,7 @@
 #include <sstream>
 #include <QDebug>
 #include <QtSql>
+#include <QtGlobal>
 #include "headers/httprequest.h"
 #include "headers/httpresponse.h"
 

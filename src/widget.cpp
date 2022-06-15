@@ -1,5 +1,6 @@
 #include "headers/widget.h"
 #include "ui_widget.h"
+#include <QCryptographicHash>
 
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
